@@ -1,0 +1,23 @@
+server:
+  port: 8080
+  address: 0.0.0.0
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/user/**
+        - id: appointment-service
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/appointment/**
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:3000/eureka/
