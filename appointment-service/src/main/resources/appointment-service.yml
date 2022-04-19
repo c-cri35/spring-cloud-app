@@ -1,6 +1,10 @@
 spring:
   application:
     name: appointment-service
+  profiles:
+    active: dev
+  config:
+    import: "configserver:http://localhost:3000"
 
 server:
   port: 8082

@@ -1,6 +1,9 @@
 spring:
   application:
     name: discovery-service
+  cloud:
+    config.server.git.uri: "https://github.com/c-cri35/spring-config-server.git"
+
 server:
   port: 3000
 
