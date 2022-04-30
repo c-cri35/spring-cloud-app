@@ -1,6 +1,10 @@
 spring:
   application:
     name: user-service
+  profiles:
+    active: default
+  config:
+    import: "configserver:http://localhost:3000"
 
 server:
   port: 8081
@@ -16,3 +20,9 @@ info:
     name: user-service
     description: Spring Cloud Application Managing Person Instances
     version: 1.0-SNAPSHOT
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include=*:

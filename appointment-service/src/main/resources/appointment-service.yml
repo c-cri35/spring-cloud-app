@@ -20,3 +20,9 @@ info:
     name: appointment-service
     description: Spring Cloud Application Managing Person Instances
     version: 1.0-SNAPSHOT
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include=*:

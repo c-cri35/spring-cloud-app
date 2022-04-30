@@ -5,7 +5,11 @@ import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.exception.UserAlreadyExistsException;
 import com.example.userservice.model.User;
 import com.example.userservice.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +18,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@RefreshScope
 public class UserController {
+    private final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+
     private final UserService userService;
+
+    @Value("${seconds-delay: 1}")
+    private Integer secondsDelay;
 
     @Autowired
     public UserController(UserService userService) {
@@ -28,7 +38,10 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getUser(@PathVariable Long id) throws InterruptedException {
+        LOGGER.debug("Will wait " + secondsDelay);
+        Thread.sleep(1000L * secondsDelay);
+
         try {
             return ResponseEntity.ok(userService.getUserById(id));
         } catch (NotFoundException ex) {
