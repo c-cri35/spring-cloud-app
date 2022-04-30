@@ -7,7 +7,7 @@ import java.util.List;
 public interface AppointmentService {
     List<Appointment> getAllAppointments();
 
-    Appointment createAppointment(Appointment appointment);
+    Appointment createAppointment(Appointment appointment, Boolean allowUnregisteredUsers);
 
     Appointment updateAppointment(Appointment appointment);
 

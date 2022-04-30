@@ -17,8 +17,8 @@ import java.util.List;
 @RequestMapping("/appointment")
 @RefreshScope
 public class AppointmentController {
-    @Value("${hostname: http://localhost:3000}")
-    private String hostname;
+    @Value("${allow-unregistered-users: false}")
+    private Boolean allowUnregisteredUsers;
 
     private final AppointmentService appointmentService;
 
@@ -27,23 +27,29 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    @GetMapping("/hostname")
-    public String getHostname() {
-        return hostname;
-    }
-
     @GetMapping
     public ResponseEntity<List<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());
     }
 
+    /**
+     * Creates an appointment with given details.
+     * @return created appointment
+     * @throws HttpStatus.CONFLICT if there is already an appointment scheduled for the same day
+     *         HttpStatus.NOT_FOUND if the car owner is not registered by user-service
+     *         and the flag allow-unregistered users is enabled
+     */
     @PostMapping
     public ResponseEntity<?> createAppointment(@RequestBody Appointment appointment) {
         try {
-            return ResponseEntity.ok(appointmentService.createAppointment(appointment));
+            return ResponseEntity.ok(appointmentService.createAppointment(appointment, allowUnregisteredUsers));
         } catch (AppointmentDateConflictException ex) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
+                    .body(ex.getMessage());
+        } catch (NotFoundException ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
                     .body(ex.getMessage());
         }
     }

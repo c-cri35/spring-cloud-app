@@ -1,6 +1,7 @@
 package com.example.userservice.service;
 
 import com.example.userservice.datasource.Registrations;
+import com.example.userservice.exception.NotFoundException;
 import com.example.userservice.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<User> getAllUsers() {
         return userRegistrations.getAll();
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRegistrations.getById(id)
+                .orElseThrow(() -> new NotFoundException(User.class, id));
     }
 
     @Override
